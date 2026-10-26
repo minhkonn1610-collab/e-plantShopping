@@ -1,0 +1,81 @@
+/* Paradise Nursery landing page */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.landing-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url("https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-content {
+  max-width: 800px;
+  text-align: center;
+  color: white;
+}
+
+.hero-content h1 {
+  margin-bottom: 20px;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.hero-content p {
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+  line-height: 1.7;
+}
+
+.get-started-button {
+  display: inline-block;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2e7d32;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.get-started-button:hover {
+  background-color: #1b5e20;
+}
+
+.about-us {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  line-height: 1.7;
+}
+
+.about-us h1 {
+  color: #2e7d32;
+}
+
+@media (max-width: 600px) {
+  .landing-page {
+    padding: 24px 16px;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+}
