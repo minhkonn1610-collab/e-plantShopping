@@ -1,20 +1,25 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  increaseQuantity,
-  decreaseQuantity,
-  removeFromCart,
-  clearCart,
-} from "./CartSlice";
+import { removeItem, updateQuantity } from "./CartSlice";
+import { Navbar } from "./ProductList";
 
-function CartItem() {
+function CartItem({
+  onHomeClick = () => {
+    window.location.href = "/";
+  },
+  onPlantsClick = () => {
+    window.location.href = "/#plants";
+  },
+  onCartClick = () => {},
+  onContinueShopping,
+}) {
   const dispatch = useDispatch();
 
   const cartItems = useSelector(
     (state) => state.cart?.cartItems ?? []
   );
 
-  const cartCount = cartItems.reduce(
+  const cartItemCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0
   );
@@ -24,17 +29,54 @@ function CartItem() {
     0
   );
 
+  const handleIncrement = (item) => {
+    dispatch(
+      updateQuantity({
+        name: item.name,
+        quantity: item.quantity + 1,
+      })
+    );
+  };
+
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(
+        updateQuantity({
+          name: item.name,
+          quantity: item.quantity - 1,
+        })
+      );
+    } else {
+      dispatch(removeItem(item.name));
+    }
+  };
+
+  const handleRemove = (item) => {
+    dispatch(removeItem(item.name));
+  };
+
   const handleCheckout = () => {
     window.alert("Coming Soon!");
   };
 
+  const handleContinueShopping = (event) => {
+    event.preventDefault();
+
+    if (onContinueShopping) {
+      onContinueShopping();
+    } else {
+      onPlantsClick();
+    }
+  };
+
   return (
     <div className="cart-page">
-      <nav className="shop-navbar">
-        <a href="/">Home</a>
-        <a href="/#plants">Plants</a>
-        <a href="/cart">Cart ({cartCount})</a>
-      </nav>
+      <Navbar
+        cartItemCount={cartItemCount}
+        onHomeClick={onHomeClick}
+        onPlantsClick={onPlantsClick}
+        onCartClick={onCartClick}
+      />
 
       <main className="cart-container">
         <h1>Shopping Cart</h1>
@@ -42,8 +84,16 @@ function CartItem() {
         {cartItems.length === 0 ? (
           <section className="empty-cart">
             <h2>Your cart is empty</h2>
-            <p>Discover our beautiful collection of houseplants.</p>
-            <a className="continue-shopping" href="/#plants">
+
+            <p>
+              Discover our beautiful collection of houseplants.
+            </p>
+
+            <a
+              href="#plants"
+              className="get-started-button"
+              onClick={handleContinueShopping}
+            >
               Continue Shopping
             </a>
           </section>
@@ -73,22 +123,19 @@ function CartItem() {
                     <div className="quantity-controls">
                       <button
                         type="button"
-                        onClick={() =>
-                          dispatch(decreaseQuantity(item.id))
-                        }
-                        disabled={item.quantity <= 1}
+                        onClick={() => handleDecrement(item)}
                         aria-label={`Decrease ${item.name} quantity`}
                       >
-                        −
+                        -
                       </button>
 
-                      <span>Quantity: {item.quantity}</span>
+                      <span>
+                        Quantity: {item.quantity}
+                      </span>
 
                       <button
                         type="button"
-                        onClick={() =>
-                          dispatch(increaseQuantity(item.id))
-                        }
+                        onClick={() => handleIncrement(item)}
                         aria-label={`Increase ${item.name} quantity`}
                       >
                         +
@@ -97,10 +144,8 @@ function CartItem() {
 
                     <button
                       type="button"
-                      className="delete-button"
-                      onClick={() =>
-                        dispatch(removeFromCart(item.id))
-                      }
+                      className="cart-item-delete"
+                      onClick={() => handleRemove(item)}
                     >
                       Delete
                     </button>
@@ -110,9 +155,7 @@ function CartItem() {
             </div>
 
             <section className="cart-summary">
-              <h2>
-                Total Items: {cartCount}
-              </h2>
+              <h2>Total Items: {cartItemCount}</h2>
 
               <h2>
                 Total Amount: ${totalAmount.toFixed(2)}
@@ -126,15 +169,11 @@ function CartItem() {
                 Checkout
               </button>
 
-              <button
-                type="button"
-                className="clear-cart-button"
-                onClick={() => dispatch(clearCart())}
+              <a
+                href="#plants"
+                className="get-started-button"
+                onClick={handleContinueShopping}
               >
-                Clear Cart
-              </button>
-
-              <a className="continue-shopping" href="/#plants">
                 Continue Shopping
               </a>
             </section>
